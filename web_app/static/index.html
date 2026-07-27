@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Fight Arena — Join</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="bg"></div>
+
+<header class="site-head">
+  <div class="brand"><span class="brand-mark"></span> AI FIGHT ARENA</div>
+  <div class="head-right">
+    <span id="llm-state" class="chip"></span>
+    <span id="player-count" class="chip"></span>
+  </div>
+</header>
+
+<!-- Step 1 --------------------------------------------------------------- -->
+<section id="step-join" class="step">
+  <div class="panel narrow">
+    <h1>Enter the arena</h1>
+    <p class="lede">Pick a fighter, then describe how it should think. Your words
+      become the code that plays for you.</p>
+    <input id="name-input" type="text" maxlength="18" placeholder="Your name" autocomplete="off">
+    <button id="join-btn" class="primary">JOIN</button>
+    <div class="err" id="join-err"></div>
+  </div>
+</section>
+
+<!-- Step 2 --------------------------------------------------------------- -->
+<section id="step-pick" class="step hidden">
+  <div class="step-head">
+    <h2>Choose your fighter</h2>
+    <p class="lede">Twelve fighters, one each. Once a fighter is taken it is gone
+      for the rest of the match.</p>
+  </div>
+  <div id="grid" class="grid"></div>
+</section>
+
+<!-- Step 3 --------------------------------------------------------------- -->
+<section id="step-brief" class="step hidden">
+  <div class="panel wide">
+    <div class="chosen" id="chosen"></div>
+    <h2>How does <span id="brief-name">your fighter</span> fight?</h2>
+    <p class="lede">Plain English. Be specific about aggression, spacing, when to
+      shoot, when to block, and who to go after.</p>
+
+    <textarea id="brief" maxlength="1500" rows="9" placeholder="Example:
+
+Stay near the middle of the stage and never chase anyone off the edge. Keep my
+distance and shoot whenever I have ammo. If someone gets within arm's reach,
+roll away first, then hit them hard while they are recovering. Always go after
+whoever has the least health left. If my own health drops below a third, back
+off and shield until it feels safe again."></textarea>
+
+    <div class="brief-foot">
+      <span id="char-count">0 / 1500</span>
+      <div class="brief-actions">
+        <button id="back-btn" class="ghost">Change fighter</button>
+        <button id="finish-btn" class="primary">FINISH</button>
+      </div>
+    </div>
+    <div class="err" id="brief-err"></div>
+  </div>
+</section>
+
+<!-- Step 4 --------------------------------------------------------------- -->
+<section id="step-done" class="step hidden">
+  <div class="panel narrow">
+    <div class="done-badge">✓</div>
+    <h1 id="done-title">You're in</h1>
+    <p class="lede" id="done-msg"></p>
+    <div class="note" id="done-note"></div>
+    <details class="code-peek">
+      <summary>See the code your description produced</summary>
+      <pre id="code"></pre>
+    </details>
+    <button id="rewrite-btn" class="ghost">Rewrite my tactics</button>
+    <p class="foot-note">Rewriting updates your fighter live, mid-match.</p>
+  </div>
+</section>
+
+<aside id="players" class="players"></aside>
+
+<script src="/static/lobby.js"></script>
+</body>
+</html>

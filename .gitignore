@@ -1,0 +1,11 @@
+.env
+runtime/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+
+# Fighter scripts are generated per session. The reference scripts in
+# player/examples/ are not loaded by the game and are kept.
+player/*.py

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Fight Arena</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div id="stage-wrap">
+  <canvas id="stage"></canvas>
+
+  <header id="topbar">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <span class="brand-text">AI FIGHT ARENA</span>
+    </div>
+    <div id="match-label">MATCH 1</div>
+    <div id="conn" class="pill offline">connecting</div>
+  </header>
+
+  <div id="roster"></div>
+
+  <div id="ticker"></div>
+
+  <div id="center-msg"></div>
+
+  <div id="waiting" class="overlay hidden">
+    <div class="waiting-card">
+      <h1>Waiting for fighters</h1>
+      <p>Join the lobby, pick a character, and describe how it should fight.</p>
+      <div class="join-url" id="join-url">http://localhost:8100</div>
+      <div id="script-list"></div>
+    </div>
+  </div>
+
+  <div id="victory" class="overlay hidden">
+    <div class="confetti" id="confetti"></div>
+    <div class="victory-card">
+      <div class="victory-kicker">WINNER</div>
+      <div class="victory-name" id="win-name">—</div>
+      <div class="victory-char" id="win-char">—</div>
+      <div class="victory-stats">
+        <div><b id="win-kos">0</b><span>KOs</span></div>
+        <div><b id="win-dmg">0</b><span>Damage</span></div>
+        <div><b id="win-stocks">0</b><span>Stocks left</span></div>
+      </div>
+      <button id="next-game">NEXT GAME</button>
+      <div class="victory-note">Characters are released back to the lobby.</div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/audio.js"></script>
+<script src="/static/game.js"></script>
+</body>
+</html>
