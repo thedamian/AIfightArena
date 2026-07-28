@@ -27,6 +27,7 @@ fi
 
 GAME_PORT="$(grep -E '^GAME_PORT=' .env | cut -d= -f2 || true)"
 LOBBY_PORT="$(grep -E '^LOBBY_PORT=' .env | cut -d= -f2 || true)"
+LOBBY_PUBLIC_HOST="$(grep -E '^LOBBY_PUBLIC_HOST=' .env | cut -d= -f2- || true)"
 GAME_PORT="${GAME_PORT:-8000}"
 LOBBY_PORT="${LOBBY_PORT:-8100}"
 
@@ -96,15 +97,15 @@ lan_ip() {
   hostname -I 2>/dev/null | awk '{print $1}' && return
   echo localhost
 }
-IP="$(lan_ip)"
-IP="${IP:-localhost}"
+LOBBY_PUBLIC_HOST="${LOBBY_PUBLIC_HOST:-$(lan_ip)}"
+LOBBY_PUBLIC_HOST="${LOBBY_PUBLIC_HOST:-localhost}"
 
 cat <<EOF
 
   AI FIGHT ARENA
 
   Main screen (put this on the TV)   http://localhost:${GAME_PORT}
-  Lobby (players join on their phone) http://${IP}:${LOBBY_PORT}
+  Lobby (players join on their phone) http://${LOBBY_PUBLIC_HOST}:${LOBBY_PORT}
 
   Fighter scripts live in ./player — add, edit or delete them while a match
   is running and the arena keeps up.

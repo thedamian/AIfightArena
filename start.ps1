@@ -30,10 +30,12 @@ if (-not (Test-Path .env)) {
 
 $gamePort = 8000
 $lobbyPort = 8100
+$lobbyPublicHost = ""
 if (Test-Path .env) {
     foreach ($line in Get-Content .env) {
         if ($line -match '^GAME_PORT=(\d+)') { $gamePort = [int]$matches[1] }
         if ($line -match '^LOBBY_PORT=(\d+)') { $lobbyPort = [int]$matches[1] }
+        if ($line -match '^LOBBY_PUBLIC_HOST=(.+)$') { $lobbyPublicHost = $matches[1].Trim() }
     }
 }
 
@@ -57,17 +59,19 @@ $lobbyProc = Start-Process -FilePath uv -ArgumentList "run", "python", "-m", "we
 
 Start-Sleep -Seconds 2
 
-$ip = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {
-    $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*'
-} | Select-Object -First 1).IPAddress
-if (-not $ip) { $ip = "localhost" }
+if (-not $lobbyPublicHost) {
+    $lobbyPublicHost = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {
+        $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*'
+    } | Select-Object -First 1).IPAddress
+}
+if (-not $lobbyPublicHost) { $lobbyPublicHost = "localhost" }
 
 Write-Host @"
 
   AI FIGHT ARENA
 
   Main screen (put this on the TV)    http://localhost:${gamePort}
-  Lobby (players join on their phone) http://${ip}:${lobbyPort}
+    Lobby (players join on their phone) http://${lobbyPublicHost}:${lobbyPort}
 
   Fighter scripts live in ./player — add, edit or delete them while a match
   is running and the arena keeps up.
