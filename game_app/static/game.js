@@ -21,6 +21,7 @@ const el = {
   winDmg: document.getElementById('win-dmg'),
   winStocks: document.getElementById('win-stocks'),
   nextBtn: document.getElementById('next-game'),
+  resetBtn: document.getElementById('reset-game'),
   joinUrl: document.getElementById('join-url'),
 };
 
@@ -93,6 +94,26 @@ el.nextBtn.addEventListener('click', () => {
   Sound.stopMusic(0.3);
   fetch('/api/next-game', {method: 'POST'}).catch(() => {});
 });
+
+async function resetMatch() {
+  if (el.resetBtn.disabled) return;
+  el.resetBtn.disabled = true;
+  Sound.unlock();
+  Sound.stopMusic(0.3);
+  try {
+    const response = await fetch('/api/reset', {method: 'POST'});
+    if (!response.ok) throw new Error(`reset failed (${response.status})`);
+    particles.length = 0;
+    prev = {fighters: new Map(), state: null, countdown: -1, winnerId: null};
+    lastEventTime = 0;
+  } catch (error) {
+    console.error('Could not reset the arena:', error);
+  } finally {
+    window.setTimeout(() => { el.resetBtn.disabled = false; }, 350);
+  }
+}
+
+el.resetBtn.addEventListener('click', resetMatch);
 
 /* ------------------------------------------------------------ state intake */
 function onState(next) {

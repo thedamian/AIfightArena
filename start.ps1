@@ -33,9 +33,9 @@ $lobbyPort = 8100
 $lobbyPublicHost = ""
 if (Test-Path .env) {
     foreach ($line in Get-Content .env) {
-        if ($line -match '^GAME_PORT=(\d+)') { $gamePort = [int]$matches[1] }
-        if ($line -match '^LOBBY_PORT=(\d+)') { $lobbyPort = [int]$matches[1] }
-        if ($line -match '^LOBBY_PUBLIC_HOST=(.+)$') { $lobbyPublicHost = $matches[1].Trim() }
+        if ($line -match '^\s*GAME_PORT\s*=\s*(\d+)') { $gamePort = [int]$matches[1] }
+        if ($line -match '^\s*LOBBY_PORT\s*=\s*(\d+)') { $lobbyPort = [int]$matches[1] }
+        if ($line -match '^\s*LOBBY_PUBLIC_HOST\s*=\s*(.*)$') { $lobbyPublicHost = $matches[1].Trim() }
     }
 }
 

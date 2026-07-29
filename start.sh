@@ -25,9 +25,9 @@ if [ ! -f .env ]; then
   echo "Created .env — add your OPENAI_API_KEY to it."
 fi
 
-GAME_PORT="$(grep -E '^GAME_PORT=' .env | cut -d= -f2 || true)"
-LOBBY_PORT="$(grep -E '^LOBBY_PORT=' .env | cut -d= -f2 || true)"
-LOBBY_PUBLIC_HOST="$(grep -E '^LOBBY_PUBLIC_HOST=' .env | cut -d= -f2- || true)"
+GAME_PORT="$(grep -E '^\s*GAME_PORT\s*=' .env | cut -d= -f2- | tr -d ' \r' || true)"
+LOBBY_PORT="$(grep -E '^\s*LOBBY_PORT\s*=' .env | cut -d= -f2- | tr -d ' \r' || true)"
+LOBBY_PUBLIC_HOST="$(grep -E '^\s*LOBBY_PUBLIC_HOST\s*=' .env | cut -d= -f2- | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]\r]*$//' || true)"
 GAME_PORT="${GAME_PORT:-8000}"
 LOBBY_PORT="${LOBBY_PORT:-8100}"
 

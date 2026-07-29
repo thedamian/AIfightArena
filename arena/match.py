@@ -81,8 +81,8 @@ class Match:
         """Force an immediate rescan of /player instead of waiting for the poll."""
         self._sync_roster(self.loader.scan())
 
-    def next_game(self) -> None:
-        """Reset everything for a fresh match, keeping whoever is still in /player."""
+    def next_game(self, spread_fighters: bool = False) -> None:
+        """Reset the match, loading the latest player scripts from /player."""
         self.match_number += 1
         self.winner = None
         self.awaiting_next = False
@@ -96,22 +96,49 @@ class Match:
         self._sync_roster()
 
         if len(self.fighters) >= 2:
+            self._begin_countdown(spread_fighters=spread_fighters)
+        else:
+            self.state = WAITING
+
+    def reset(self) -> None:
+        """Return the arena to its initial state while keeping player scripts."""
+        self.match_number = 1
+        self.tick = 0
+        self.winner = None
+        self.awaiting_next = False
+        self.projectiles.clear()
+        self.events.clear()
+        self._actions.clear()
+        self._used_slots.clear()
+        self._next_id = 1
+
+        # Rebuild fighters from the latest saved player scripts. This preserves
+        # each player's chosen name, character, and instructions while wiping
+        # all in-match health, stocks, scores, cooldowns, and positions.
+        self.fighters.clear()
+        self.loader.scan()
+        self._sync_roster()
+
+        if len(self.fighters) >= 2:
             self._begin_countdown()
         else:
             self.state = WAITING
 
-    def _begin_countdown(self) -> None:
+    def _begin_countdown(self, spread_fighters: bool = False) -> None:
         self.state = COUNTDOWN
         self.countdown = COUNTDOWN_TICKS
         self.winner = None
         self.projectiles.clear()
-        for i, f in enumerate(self.fighters.values()):
+        fighters = list(self.fighters.values())
+        spawns = self.stage.spread_spawns(len(fighters)) if spread_fighters else []
+        for i, f in enumerate(fighters):
             f.stocks = self.stocks
             f.eliminated = False
             f.kos = 0
             f.damage_dealt = 0.0
-            f.spawn_at(*self.stage.spawn_for(f.slot))
-        self._event("start", f"Match {self.match_number} — {len(self.fighters)} fighters")
+            f.spawn_at(*(spawns[i] if spawns else self.stage.spawn_for(f.slot)))
+        label = "spread reset" if spread_fighters else "start"
+        self._event(label, f"Match {self.match_number} — {len(fighters)} fighters")
 
     # ---------------------------------------------------------------- roster
     def _sync_roster(self, changes=None) -> None:

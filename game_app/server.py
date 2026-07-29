@@ -124,6 +124,13 @@ async def next_game() -> dict:
     return {"ok": True, "state": match.state, "match": match.match_number}
 
 
+@app.post("/api/reset")
+async def reset() -> dict:
+    """Reset the arena to its first-match state using the saved player scripts."""
+    match.reset()
+    return {"ok": True, "state": match.state, "match": match.match_number}
+
+
 @app.post("/internal/roster-changed")
 async def roster_changed(x_arena_token: str = Header(default="")) -> dict:
     """Lobby nudge so a newly written script appears without waiting for the poll."""
@@ -148,6 +155,8 @@ async def ws_endpoint(ws: WebSocket) -> None:
                 continue
             if msg.get("cmd") == "next":
                 match.next_game()
+            elif msg.get("cmd") == "reset":
+                match.reset()
     except WebSocketDisconnect:
         pass
     except Exception:                                # noqa: BLE001

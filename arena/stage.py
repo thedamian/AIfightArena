@@ -74,3 +74,21 @@ class Stage:
 
     def spawn_for(self, index: int) -> tuple[float, float]:
         return self.spawn_points[index % len(self.spawn_points)]
+
+    def spread_spawns(self, count: int) -> list[tuple[float, float]]:
+        """Return ground-level spawns distributed across the widest platform."""
+        if count <= 0:
+            return []
+
+        # Keep fighters inside the platform edges while maximizing the minimum
+        # horizontal distance between them. The tiny vertical offset lets the
+        # first physics step settle each fighter onto the main platform.
+        edge_padding = 42
+        left = self.main.left + edge_padding
+        right = self.main.right - edge_padding
+        y = self.main.top - 88
+        if count == 1:
+            return [((left + right) / 2, y)]
+
+        gap = (right - left) / (count - 1)
+        return [(left + gap * index, y) for index in range(count)]
